@@ -19,5 +19,5 @@ spec:
       - image: vishalppatilp5/node-js-sample:latest
         name: node-js-app
         ports:
-      - containerPort: 80
-        name: http
+        - name: http
+          containerPort: 80
