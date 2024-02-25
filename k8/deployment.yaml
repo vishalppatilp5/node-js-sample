@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: node-js-app
+  name: node-js-app
+  namespace: webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: node-js-app
+  template:
+    metadata:
+      labels:
+        app: node-js-app
+    spec:
+      containers:
+        - image: vishalppatilp5/node-js-sample:latest
+        name: node-js-app
+        ports:
+        - containerPort: 80
