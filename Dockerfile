@@ -1,14 +1,20 @@
-FROM node:16.0.0-alpine as builder
-WORKDIR /node-js-sample
-COPY ./package.json .
-COPY ./package-lock.json .
-RUN npm install
-COPY . .
-RUN npm run build
+# Use an official Node.js runtime as a base image
+FROM node:14
 
-FROM nginx:stable-alpine
-WORKDIR /usr/share/nginx/html
-RUN rm -rf ./*
-COPY --from=builder /app/dist .
-EXPOSE 80
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Copy the application code to the working directory
+COPY . .
+
+# Expose the port on which the app runs
+EXPOSE 8080
+
+# Define the command to run your application
+CMD ["npm", "start"]
