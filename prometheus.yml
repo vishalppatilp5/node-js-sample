@@ -1,0 +1,1043 @@
+root@monitoring:~# sudo useradd --system --no-create-home --shell /bin/false prometheus
+root@monitoring:~# cat /etc/passwd | grep prometheus
+prometheus:x:998:998::/home/prometheus:/bin/false
+root@monitoring:~# wget https://github.com/prometheus/prometheus/releases/download/v2.49.0-rc.1/prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+--2024-02-24 18:39:25--  https://github.com/prometheus/prometheus/releases/download/v2.49.0-rc.1/prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+Resolving github.com (github.com)... 4.208.26.197
+Connecting to github.com (github.com)|4.208.26.197|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/6838921/7b134043-d3ed-4b37-bbe2-789435ef9583?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240224%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240224T183926Z&X-Amz-Expires=300&X-Amz-Signature=f573a1798b26b6ddf260c4d9f6ae6144814eb29a098576f3abdd00ec4e24b4af&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=6838921&response-content-disposition=attachment%3B%20filename%3Dprometheus-2.49.0-rc.1.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream [following]
+--2024-02-24 18:39:26--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/6838921/7b134043-d3ed-4b37-bbe2-789435ef9583?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240224%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240224T183926Z&X-Amz-Expires=300&X-Amz-Signature=f573a1798b26b6ddf260c4d9f6ae6144814eb29a098576f3abdd00ec4e24b4af&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=6838921&response-content-disposition=attachment%3B%20filename%3Dprometheus-2.49.0-rc.1.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.108.133, 185.199.109.133, 185.199.110.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.108.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 97161690 (93M) [application/octet-stream]
+Saving to: ‘prometheus-2.49.0-rc.1.linux-amd64.tar.gz’
+
+prometheus-2.49.0-rc.1.linux-amd6 100%[============================================================>]  92.66M  47.3MB/s    in 2.0s    
+
+2024-02-24 18:39:28 (47.3 MB/s) - ‘prometheus-2.49.0-rc.1.linux-amd64.tar.gz’ saved [97161690/97161690]
+
+root@monitoring:~# ll
+total 94920
+drwx------  4 root root     4096 Feb 24 18:39 ./
+drwxr-xr-x 19 root root     4096 Feb 23 16:48 ../
+-rw-r--r--  1 root root     3106 Oct 15  2021 .bashrc
+-rw-r--r--  1 root root      161 Jul  9  2019 .profile
+drwx------  2 root root     4096 Feb 23 16:48 .ssh/
+-rw-r--r--  1 root root      165 Feb 24 18:39 .wget-hsts
+-rw-r--r--  1 root root 97161690 Dec 20 09:58 prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+drwx------  4 root root     4096 Feb 23 16:48 snap/
+root@monitoring:~# tar -xvf prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+prometheus-2.49.0-rc.1.linux-amd64/
+prometheus-2.49.0-rc.1.linux-amd64/NOTICE
+prometheus-2.49.0-rc.1.linux-amd64/LICENSE
+prometheus-2.49.0-rc.1.linux-amd64/prometheus
+prometheus-2.49.0-rc.1.linux-amd64/consoles/
+prometheus-2.49.0-rc.1.linux-amd64/consoles/prometheus-overview.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-cpu.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/prometheus.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/index.html.example
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-overview.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-disk.html
+prometheus-2.49.0-rc.1.linux-amd64/prometheus.yml
+prometheus-2.49.0-rc.1.linux-amd64/promtool
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/menu.lib
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/prom.lib
+root@monitoring:~# ll
+total 94924
+drwx------  5 root root     4096 Feb 24 18:39 ./
+drwxr-xr-x 19 root root     4096 Feb 23 16:48 ../
+-rw-r--r--  1 root root     3106 Oct 15  2021 .bashrc
+-rw-r--r--  1 root root      161 Jul  9  2019 .profile
+drwx------  2 root root     4096 Feb 23 16:48 .ssh/
+-rw-r--r--  1 root root      165 Feb 24 18:39 .wget-hsts
+drwxr-xr-x  4 1001  127     4096 Dec 20 09:54 prometheus-2.49.0-rc.1.linux-amd64/
+-rw-r--r--  1 root root 97161690 Dec 20 09:58 prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+drwx------  4 root root     4096 Feb 23 16:48 snap/
+root@monitoring:~# cd prometheus-2.49.0-rc.1.linux-amd64
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# ll
+total 240976
+drwxr-xr-x 4 1001  127      4096 Dec 20 09:54 ./
+drwx------ 5 root root      4096 Feb 24 18:39 ../
+-rw-r--r-- 1 1001  127     11357 Dec 20 09:51 LICENSE
+-rw-r--r-- 1 1001  127      3773 Dec 20 09:51 NOTICE
+drwxr-xr-x 2 1001  127      4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x 2 1001  127      4096 Dec 20 09:51 consoles/
+-rwxr-xr-x 1 1001  127 126517807 Dec 20 09:31 prometheus*
+-rw-r--r-- 1 1001  127       934 Dec 20 09:51 prometheus.yml
+-rwxr-xr-x 1 1001  127 120196875 Dec 20 09:31 promtool*
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# mv promtool /usr/local/bin/
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# mkdir -o /data /etc/prometheus 
+mkdir: invalid option -- 'o'
+Try 'mkdir --help' for more information.
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# mkdir -p /data /etc/prometheus 
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# sudo mv consoles console_libraries/ prometheus.yml /etc/prometheus/
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# sudo chown -R prometheus:prometheus /etc/prometheus/ /data/
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# stat /etc/prometheus
+  File: /etc/prometheus
+  Size: 4096      	Blocks: 8          IO Block: 4096   directory
+Device: ca01h/51713d	Inode: 289944      Links: 4
+Access: (0755/drwxr-xr-x)  Uid: (  998/prometheus)   Gid: (  998/prometheus)
+Access: 2024-02-24 18:50:03.267743863 +0000
+Modify: 2024-02-24 18:49:39.635727677 +0000
+Change: 2024-02-24 18:50:03.267743863 +0000
+ Birth: 2024-02-24 18:44:24.307503985 +0000
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# stat /data
+  File: /data
+  Size: 4096      	Blocks: 8          IO Block: 4096   directory
+Device: ca01h/51713d	Inode: 2322433     Links: 2
+Access: (0755/drwxr-xr-x)  Uid: (  998/prometheus)   Gid: (  998/prometheus)
+Access: 2024-02-24 18:50:03.267743863 +0000
+Modify: 2024-02-24 18:44:24.307503985 +0000
+Change: 2024-02-24 18:50:03.267743863 +0000
+ Birth: 2024-02-24 18:44:24.307503985 +0000
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# prometheus --version
+Command 'prometheus' not found, but can be installed with:
+apt install prometheus
+root@monitoring:~/prometheus-2.49.0-rc.1.linux-amd64# cd ~
+root@monitoring:~# prometheus --version
+Command 'prometheus' not found, but can be installed with:
+apt install prometheus
+root@monitoring:~# ll /usr/local/bin/
+total 117392
+drwxr-xr-x  2 root root      4096 Feb 24 18:43 ./
+drwxr-xr-x 10 root root      4096 Dec  7 02:10 ../
+-rwxr-xr-x  1 1001  127 120196875 Dec 20 09:31 promtool*
+root@monitoring:~# ll /etc/prometheus/
+total 20
+drwxr-xr-x  4 prometheus prometheus 4096 Feb 24 18:49 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 consoles/
+-rw-r--r--  1 prometheus prometheus  934 Dec 20 09:51 prometheus.yml
+root@monitoring:~# exit
+exit
+root@ip-172-31-14-249:~# exit
+logout
+ubuntu@ip-172-31-14-249:~$ bash
+ubuntu@monitoring:~$ exit
+exit
+ubuntu@ip-172-31-14-249:~$ prometheus --version
+Command 'prometheus' not found, but can be installed with:
+sudo apt install prometheus
+ubuntu@ip-172-31-14-249:~$ hostnamctl
+Command 'hostnamctl' not found, did you mean:
+  command 'hostnamectl' from deb systemd (249.11-0ubuntu3.11)
+Try: sudo apt install <deb name>
+ubuntu@ip-172-31-14-249:~$ hostname
+monitoring
+ubuntu@ip-172-31-14-249:~$ hostnamectl 
+ Static hostname: monitoring
+       Icon name: computer-vm
+         Chassis: vm
+      Machine ID: def65f2a086b4b9480e14678fc7bdfcc
+         Boot ID: 95833857b7094f65955b28cefaa7d452
+  Virtualization: xen
+Operating System: Ubuntu 22.04.3 LTS              
+          Kernel: Linux 6.2.0-1017-aws
+    Architecture: x86-64
+ Hardware Vendor: Xen
+  Hardware Model: HVM domU
+ubuntu@ip-172-31-14-249:~$ ll
+total 32
+drwxr-x--- 4 ubuntu ubuntu 4096 Feb 24 18:58 ./
+drwxr-xr-x 3 root   root   4096 Feb 23 16:48 ../
+-rw------- 1 ubuntu ubuntu    5 Feb 24 18:58 .bash_history
+-rw-r--r-- 1 ubuntu ubuntu  220 Jan  6  2022 .bash_logout
+-rw-r--r-- 1 ubuntu ubuntu 3771 Jan  6  2022 .bashrc
+drwx------ 2 ubuntu ubuntu 4096 Feb 24 18:37 .cache/
+-rw-r--r-- 1 ubuntu ubuntu  807 Jan  6  2022 .profile
+drwx------ 2 ubuntu ubuntu 4096 Feb 23 16:48 .ssh/
+-rw-r--r-- 1 ubuntu ubuntu    0 Feb 24 18:37 .sudo_as_admin_successful
+ubuntu@ip-172-31-14-249:~$ wget https://github.com/prometheus/prometheus/releases/download/v2.49.0-rc.1/prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+--2024-02-24 19:01:37--  https://github.com/prometheus/prometheus/releases/download/v2.49.0-rc.1/prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+Resolving github.com (github.com)... 4.208.26.197
+Connecting to github.com (github.com)|4.208.26.197|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/6838921/7b134043-d3ed-4b37-bbe2-789435ef9583?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240224%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240224T190137Z&X-Amz-Expires=300&X-Amz-Signature=6a25ed15278590b92ff880a276f30955da4ba644e62f1f5ad30636edf46915d6&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=6838921&response-content-disposition=attachment%3B%20filename%3Dprometheus-2.49.0-rc.1.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream [following]
+--2024-02-24 19:01:37--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/6838921/7b134043-d3ed-4b37-bbe2-789435ef9583?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240224%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240224T190137Z&X-Amz-Expires=300&X-Amz-Signature=6a25ed15278590b92ff880a276f30955da4ba644e62f1f5ad30636edf46915d6&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=6838921&response-content-disposition=attachment%3B%20filename%3Dprometheus-2.49.0-rc.1.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.111.133, 185.199.108.133, 185.199.109.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.111.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 97161690 (93M) [application/octet-stream]
+Saving to: ‘prometheus-2.49.0-rc.1.linux-amd64.tar.gz’
+
+prometheus-2.49.0-rc.1.linux-amd6 100%[============================================================>]  92.66M   128MB/s    in 0.7s    
+
+2024-02-24 19:01:38 (128 MB/s) - ‘prometheus-2.49.0-rc.1.linux-amd64.tar.gz’ saved [97161690/97161690]
+
+ubuntu@ip-172-31-14-249:~$ tar -xvf prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+prometheus-2.49.0-rc.1.linux-amd64/
+prometheus-2.49.0-rc.1.linux-amd64/NOTICE
+prometheus-2.49.0-rc.1.linux-amd64/LICENSE
+prometheus-2.49.0-rc.1.linux-amd64/prometheus
+prometheus-2.49.0-rc.1.linux-amd64/consoles/
+prometheus-2.49.0-rc.1.linux-amd64/consoles/prometheus-overview.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-cpu.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/prometheus.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/index.html.example
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-overview.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-disk.html
+prometheus-2.49.0-rc.1.linux-amd64/prometheus.yml
+prometheus-2.49.0-rc.1.linux-amd64/promtool
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/menu.lib
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/prom.lib
+ubuntu@ip-172-31-14-249:~$ cd prometheus-2.49.0-rc.1.linux-amd64/
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ sudo mv prometheus promtool /usr/local/bin/
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ sudo mkdir -p /data /etc/prometheus
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ sudo mv consoles console_libraries/ prometheus.yml /etc/prometheus/
+mv: cannot move 'consoles' to '/etc/prometheus/consoles': Directory not empty
+mv: cannot move 'console_libraries/' to '/etc/prometheus/console_libraries': Directory not empty
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ ll /etc/prometheus/
+total 20
+drwxr-xr-x  4 prometheus prometheus 4096 Feb 24 19:02 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 consoles/
+-rw-r--r--  1 ubuntu     ubuntu      934 Dec 20 09:51 prometheus.yml
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ sudo chown -R prometheus:prometheus /etc/prometheus/ /data/
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ prometheus --version
+prometheus, version 2.49.0-rc.1 (branch: HEAD, revision: 1e306856a6716366c74dbde6fce160fe5fd1fcda)
+  build user:       root@23ee6ccd14eb
+  build date:       20231220-09:30:04
+  go version:       go1.21.5
+  platform:         linux/amd64
+  tags:             netgo,builtinassets,stringlabels
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ cd ~
+ubuntu@ip-172-31-14-249:~$ sudo vi /etc/systemd/system/prometheus.service
+ubuntu@ip-172-31-14-249:~$ sudo vi /etc/systemd/system/prometheus.service
+ubuntu@ip-172-31-14-249:~$ sudo systemctl enable prometheus.service
+Created symlink /etc/systemd/system/multi-user.target.wants/prometheus.service → /etc/systemd/system/prometheus.service.
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start prometheus.service
+ubuntu@ip-172-31-14-249:~$ systemctl status prometheus.service
+● prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Sat 2024-02-24 19:05:04 UTC; 1s ago
+    Process: 14062 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14062 (code=exited, status=1/FAILURE)
+        CPU: 55ms
+
+ubuntu@ip-172-31-14-249:~$ systemctl status prometheus.service
+● prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Sat 2024-02-24 19:05:20 UTC; 2s ago
+    Process: 14080 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14080 (code=exited, status=1/FAILURE)
+        CPU: 56ms
+lines 1-6/6 (END)
+systemctl status prometheus.udo systemctl start                   ^C
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start prometheus.service
+Job for prometheus.service failed because the control process exited with error code.
+See "systemctl status prometheus.service" and "journalctl -xeu prometheus.service" for details.
+ubuntu@ip-172-31-14-249:~$ systemctl status prometheus.service
+× prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Sat 2024-02-24 19:05:25 UTC; 15s ago
+    Process: 14080 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14080 (code=exited, status=1/FAILURE)
+        CPU: 56ms
+
+Feb 24 19:05:25 monitoring systemd[1]: prometheus.service: Scheduled restart job, restart counter is at 5.
+Feb 24 19:05:25 monitoring systemd[1]: Stopped Prometheus.
+Feb 24 19:05:25 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:05:25 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:05:25 monitoring systemd[1]: Failed to start Prometheus.
+Feb 24 19:05:33 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:05:33 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:05:33 monitoring systemd[1]: Failed to start Prometheus.
+
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start prometheus.service
+Job for prometheus.service failed because the control process exited with error code.
+See "systemctl status prometheus.service" and "journalctl -xeu prometheus.service" for details.
+ubuntu@ip-172-31-14-249:~$ journalctl -xeu prometheus.service
+░░ The unit prometheus.service has entered the 'failed' state with result 'exit-code'.
+Feb 24 19:05:25 monitoring systemd[1]: Failed to start Prometheus.
+░░ Subject: A start job for unit prometheus.service has failed
+░░ Defined-By: systemd
+░░ Support: http://www.ubuntu.com/support
+░░ 
+░░ A start job for unit prometheus.service has finished with a failure.
+░░ 
+░░ The job identifier is 3439 and the job result is failed.
+Feb 24 19:05:33 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:05:33 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+░░ Subject: Unit failed
+░░ Defined-By: systemd
+░░ Support: http://www.ubuntu.com/support
+░░ 
+░░ The unit prometheus.service has entered the 'failed' state with result 'exit-code'.
+Feb 24 19:05:33 monitoring systemd[1]: Failed to start Prometheus.
+░░ Subject: A start job for unit prometheus.service has failed
+░░ Defined-By: systemd
+░░ Support: http://www.ubuntu.com/support
+░░ 
+░░ A start job for unit prometheus.service has finished with a failure.
+░░ 
+░░ The job identifier is 3518 and the job result is failed.
+Feb 24 19:06:05 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:06:05 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+░░ Subject: Unit failed
+░░ Defined-By: systemd
+░░ Support: http://www.ubuntu.com/support
+░░ 
+░░ The unit prometheus.service has entered the 'failed' state with result 'exit-code'.
+Feb 24 19:06:05 monitoring systemd[1]: Failed to start Prometheus.
+░░ Subject: A start job for unit prometheus.service has failed
+░░ Defined-By: systemd
+░░ Support: http://www.ubuntu.com/support
+░░ 
+░░ A start job for unit prometheus.service has finished with a failure.
+░░ 
+░░ The job identifier is 3597 and the job result is failed.
+
+ubuntu@ip-172-31-14-249:~$ sudo systemctl stop prometheus.service
+ubuntu@ip-172-31-14-249:~$ systemctl status prometheus.service
+× prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Sat 2024-02-24 19:05:25 UTC; 1min 35s ago
+    Process: 14080 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14080 (code=exited, status=1/FAILURE)
+        CPU: 56ms
+
+Feb 24 19:05:25 monitoring systemd[1]: Stopped Prometheus.
+Feb 24 19:05:25 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:05:25 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:05:25 monitoring systemd[1]: Failed to start Prometheus.
+Feb 24 19:05:33 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:05:33 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:05:33 monitoring systemd[1]: Failed to start Prometheus.
+Feb 24 19:06:05 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:06:05 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:06:05 monitoring systemd[1]: Failed to start Prometheus.
+...skipping...
+× prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Sat 2024-02-24 19:05:25 UTC; 1min 35s ago
+    Process: 14080 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14080 (code=exited, status=1/FAILURE)
+        CPU: 56ms
+
+Feb 24 19:05:25 monitoring systemd[1]: Stopped Prometheus.
+Feb 24 19:05:25 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:05:25 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:05:25 monitoring systemd[1]: Failed to start Prometheus.
+Feb 24 19:05:33 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:05:33 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:05:33 monitoring systemd[1]: Failed to start Prometheus.
+Feb 24 19:06:05 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:06:05 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:06:05 monitoring systemd[1]: Failed to start Prometheus.
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start prometheus.service
+Job for prometheus.service failed because the control process exited with error code.
+See "systemctl status prometheus.service" and "journalctl -xeu prometheus.service" for details.
+ubuntu@ip-172-31-14-249:~$ ^C
+ubuntu@ip-172-31-14-249:~$ systemctl daemon-reload
+==== AUTHENTICATING FOR org.freedesktop.systemd1.reload-daemon ===
+Authentication is required to reload the systemd state.
+Authenticating as: Ubuntu (ubuntu)
+Password: 
+polkit-agent-helper-1: pam_authenticate failed: Authentication failure
+==== AUTHENTICATION FAILED ===
+Failed to reload daemon: Access denied
+ubuntu@ip-172-31-14-249:~$ sudo systemctl daemon-reload
+ubuntu@ip-172-31-14-249:~$ ExecStart=/usr/local/prometheus/prometheus \
+--config.file /etc/prometheus/prometheus.yml
+--config.file: command not found
+ubuntu@ip-172-31-14-249:~$ ll /etc/prometheus/
+total 20
+drwxr-xr-x  4 prometheus prometheus 4096 Feb 24 19:02 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 consoles/
+-rw-r--r--  1 prometheus prometheus  934 Dec 20 09:51 prometheus.yml
+ubuntu@ip-172-31-14-249:~$ ExecStart=/usr/local/prometheus/ --config.file /etc/prometheus/prometheus.yml
+--config.file: command not found
+ubuntu@ip-172-31-14-249:~$ ExecStart=/usr/local/prometheus/ --config.file=/etc/prometheus/prometheus.yml
+-bash: --config.file=/etc/prometheus/prometheus.yml: No such file or directory
+ubuntu@ip-172-31-14-249:~$ ll /etc/prometheus/
+total 20
+drwxr-xr-x  4 prometheus prometheus 4096 Feb 24 19:02 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 consoles/
+-rw-r--r--  1 prometheus prometheus  934 Dec 20 09:51 prometheus.yml
+ubuntu@ip-172-31-14-249:~$ sudo systemctl daemon-reload
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start ^C
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start prometheus.service
+ubuntu@ip-172-31-14-249:~$ sudo systemctl status prometheus.service
+● prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Sat 2024-02-24 19:15:00 UTC; 2s ago
+    Process: 14228 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14228 (code=exited, status=1/FAILURE)
+        CPU: 53ms
+lines 1-6/6 (END)
+ubuntu@ip-172-31-14-249:~$ sudo rm consoles console_libraries/ prometheus.yml /etc/prometheus/
+rm: cannot remove 'consoles': No such file or directory
+rm: cannot remove 'console_libraries/': No such file or directory
+rm: cannot remove 'prometheus.yml': No such file or directory
+rm: cannot remove '/etc/prometheus/': Is a directory
+ubuntu@ip-172-31-14-249:~$ cd /etc/prometheus/
+ubuntu@ip-172-31-14-249:/etc/prometheus$ ll
+total 20
+drwxr-xr-x  4 prometheus prometheus 4096 Feb 24 19:02 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 consoles/
+-rw-r--r--  1 prometheus prometheus  934 Dec 20 09:51 prometheus.yml
+ubuntu@ip-172-31-14-249:/etc/prometheus$ sudo rm console console_libraries/ prometheus.yml 
+rm: cannot remove 'console': No such file or directory
+rm: cannot remove 'console_libraries/': Is a directory
+ubuntu@ip-172-31-14-249:/etc/prometheus$ sudo rmdir console console_libraries/  
+rmdir: failed to remove 'console': No such file or directory
+rmdir: failed to remove 'console_libraries/': Directory not empty
+ubuntu@ip-172-31-14-249:/etc/prometheus$ sudo rm -rf console console_libraries/  
+ubuntu@ip-172-31-14-249:/etc/prometheus$ ll
+total 12
+drwxr-xr-x  3 prometheus prometheus 4096 Feb 24 19:17 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 consoles/
+ubuntu@ip-172-31-14-249:/etc/prometheus$ sudo rm -rf console   
+ubuntu@ip-172-31-14-249:/etc/prometheus$ ll
+total 12
+drwxr-xr-x  3 prometheus prometheus 4096 Feb 24 19:17 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 consoles/
+ubuntu@ip-172-31-14-249:/etc/prometheus$ sudo rm -rf consoles/   
+ubuntu@ip-172-31-14-249:/etc/prometheus$ ll
+total 8
+drwxr-xr-x  2 prometheus prometheus 4096 Feb 24 19:18 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+ubuntu@ip-172-31-14-249:/etc/prometheus$ cd ~
+ubuntu@ip-172-31-14-249:~$ cd prometheus-2.49.0-rc.1.linux-amd64/
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ ll
+total 32
+drwxr-xr-x 4 ubuntu ubuntu  4096 Feb 24 19:02 ./
+drwxr-x--- 5 ubuntu ubuntu  4096 Feb 24 19:07 ../
+-rw-r--r-- 1 ubuntu ubuntu 11357 Dec 20 09:51 LICENSE
+-rw-r--r-- 1 ubuntu ubuntu  3773 Dec 20 09:51 NOTICE
+drwxr-xr-x 2 ubuntu ubuntu  4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x 2 ubuntu ubuntu  4096 Dec 20 09:51 consoles/
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ cd ..
+ubuntu@ip-172-31-14-249:~$ sudo rm -rf prometheus-2.49.0-rc.1.linux-amd64
+ubuntu@ip-172-31-14-249:~$ ll
+total 94928
+drwxr-x--- 4 ubuntu ubuntu     4096 Feb 24 19:18 ./
+drwxr-xr-x 3 root   root       4096 Feb 23 16:48 ../
+-rw------- 1 ubuntu ubuntu        5 Feb 24 18:58 .bash_history
+-rw-r--r-- 1 ubuntu ubuntu      220 Jan  6  2022 .bash_logout
+-rw-r--r-- 1 ubuntu ubuntu     3771 Jan  6  2022 .bashrc
+drwx------ 2 ubuntu ubuntu     4096 Feb 24 18:37 .cache/
+-rw------- 1 ubuntu ubuntu       20 Feb 24 19:07 .lesshst
+-rw-r--r-- 1 ubuntu ubuntu      807 Jan  6  2022 .profile
+drwx------ 2 ubuntu ubuntu     4096 Feb 23 16:48 .ssh/
+-rw-r--r-- 1 ubuntu ubuntu        0 Feb 24 18:37 .sudo_as_admin_successful
+-rw-rw-r-- 1 ubuntu ubuntu      165 Feb 24 19:01 .wget-hsts
+-rw-rw-r-- 1 ubuntu ubuntu 97161690 Dec 20 09:58 prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+ubuntu@ip-172-31-14-249:~$ tar -xvf prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+prometheus-2.49.0-rc.1.linux-amd64/
+prometheus-2.49.0-rc.1.linux-amd64/NOTICE
+prometheus-2.49.0-rc.1.linux-amd64/LICENSE
+prometheus-2.49.0-rc.1.linux-amd64/prometheus
+prometheus-2.49.0-rc.1.linux-amd64/consoles/
+prometheus-2.49.0-rc.1.linux-amd64/consoles/prometheus-overview.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-cpu.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/prometheus.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/index.html.example
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-overview.html
+prometheus-2.49.0-rc.1.linux-amd64/consoles/node-disk.html
+prometheus-2.49.0-rc.1.linux-amd64/prometheus.yml
+prometheus-2.49.0-rc.1.linux-amd64/promtool
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/menu.lib
+prometheus-2.49.0-rc.1.linux-amd64/console_libraries/prom.lib
+ubuntu@ip-172-31-14-249:~$ ll
+total 94932
+drwxr-x--- 5 ubuntu ubuntu     4096 Feb 24 19:18 ./
+drwxr-xr-x 3 root   root       4096 Feb 23 16:48 ../
+-rw------- 1 ubuntu ubuntu        5 Feb 24 18:58 .bash_history
+-rw-r--r-- 1 ubuntu ubuntu      220 Jan  6  2022 .bash_logout
+-rw-r--r-- 1 ubuntu ubuntu     3771 Jan  6  2022 .bashrc
+drwx------ 2 ubuntu ubuntu     4096 Feb 24 18:37 .cache/
+-rw------- 1 ubuntu ubuntu       20 Feb 24 19:07 .lesshst
+-rw-r--r-- 1 ubuntu ubuntu      807 Jan  6  2022 .profile
+drwx------ 2 ubuntu ubuntu     4096 Feb 23 16:48 .ssh/
+-rw-r--r-- 1 ubuntu ubuntu        0 Feb 24 18:37 .sudo_as_admin_successful
+-rw-rw-r-- 1 ubuntu ubuntu      165 Feb 24 19:01 .wget-hsts
+drwxr-xr-x 4 ubuntu ubuntu     4096 Dec 20 09:54 prometheus-2.49.0-rc.1.linux-amd64/
+-rw-rw-r-- 1 ubuntu ubuntu 97161690 Dec 20 09:58 prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+ubuntu@ip-172-31-14-249:~$ cd prometheus-2.49.0-rc.1.linux-amd64/
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ ll
+total 240972
+drwxr-xr-x 4 ubuntu ubuntu      4096 Dec 20 09:54 ./
+drwxr-x--- 5 ubuntu ubuntu      4096 Feb 24 19:18 ../
+-rw-r--r-- 1 ubuntu ubuntu     11357 Dec 20 09:51 LICENSE
+-rw-r--r-- 1 ubuntu ubuntu      3773 Dec 20 09:51 NOTICE
+drwxr-xr-x 2 ubuntu ubuntu      4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x 2 ubuntu ubuntu      4096 Dec 20 09:51 consoles/
+-rwxr-xr-x 1 ubuntu ubuntu 126517807 Dec 20 09:31 prometheus*
+-rw-r--r-- 1 ubuntu ubuntu       934 Dec 20 09:51 prometheus.yml
+-rwxr-xr-x 1 ubuntu ubuntu 120196875 Dec 20 09:31 promtool*
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ sudo mv consoles/ console_libraries/ prometheus.yml /etc/prometheus/
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ sudo chown -R prometheus:prometheus /etc/prometheus/ /data/
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ stat /etc/prometheus
+  File: /etc/prometheus
+  Size: 4096      	Blocks: 8          IO Block: 4096   directory
+Device: ca01h/51713d	Inode: 289944      Links: 4
+Access: (0755/drwxr-xr-x)  Uid: (  998/prometheus)   Gid: (  998/prometheus)
+Access: 2024-02-24 19:20:16.056999428 +0000
+Modify: 2024-02-24 19:19:55.636985314 +0000
+Change: 2024-02-24 19:20:16.056999428 +0000
+ Birth: 2024-02-24 18:44:24.307503985 +0000
+ubuntu@ip-172-31-14-249:~/prometheus-2.49.0-rc.1.linux-amd64$ cd ~
+ubuntu@ip-172-31-14-249:~$ ll /etc/prometheus/
+total 20
+drwxr-xr-x  4 prometheus prometheus 4096 Feb 24 19:19 ./
+drwxr-xr-x 94 root       root       4096 Feb 24 18:44 ../
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 console_libraries/
+drwxr-xr-x  2 prometheus prometheus 4096 Dec 20 09:51 consoles/
+-rw-r--r--  1 prometheus prometheus  934 Dec 20 09:51 prometheus.yml
+ubuntu@ip-172-31-14-249:~$ prometheus --version
+prometheus, version 2.49.0-rc.1 (branch: HEAD, revision: 1e306856a6716366c74dbde6fce160fe5fd1fcda)
+  build user:       root@23ee6ccd14eb
+  build date:       20231220-09:30:04
+  go version:       go1.21.5
+  platform:         linux/amd64
+  tags:             netgo,builtinassets,stringlabels
+ubuntu@ip-172-31-14-249:~$ sudo vi /etc/systemd/system/prometheus.service
+ubuntu@ip-172-31-14-249:~$ ll /usr/local/bin/prometheus 
+-rwxr-xr-x 1 ubuntu ubuntu 126517807 Dec 20 09:31 /usr/local/bin/prometheus*
+ubuntu@ip-172-31-14-249:~$ sudo systemctl enable prometheus.service
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start prometheus.service
+ubuntu@ip-172-31-14-249:~$ systemctl status prometheus.service
+● prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Sat 2024-02-24 19:22:14 UTC; 1s ago
+    Process: 14429 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14429 (code=exited, status=1/FAILURE)
+        CPU: 55ms
+
+ubuntu@ip-172-31-14-249:~$ systemctl status prometheus.service
+● prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Sat 2024-02-24 19:22:29 UTC; 2s ago
+    Process: 14447 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14447 (code=exited, status=1/FAILURE)
+        CPU: 47ms
+
+ubuntu@ip-172-31-14-249:~$ systemctl status prometheus.service
+× prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Sat 2024-02-24 19:22:34 UTC; 3min 23s ago
+    Process: 14447 ExecStart=/usr/local/bin/prometheus - config.file=/etc/prometheus/prometheus.yml - storage.tsdb.path=/data - web.co>
+   Main PID: 14447 (code=exited, status=1/FAILURE)
+        CPU: 47ms
+
+Feb 24 19:22:34 monitoring systemd[1]: prometheus.service: Scheduled restart job, restart counter is at 5.
+Feb 24 19:22:34 monitoring systemd[1]: Stopped Prometheus.
+Feb 24 19:22:34 monitoring systemd[1]: prometheus.service: Start request repeated too quickly.
+Feb 24 19:22:34 monitoring systemd[1]: prometheus.service: Failed with result 'exit-code'.
+Feb 24 19:22:34 monitoring systemd[1]: Failed to start Prometheus.
+
+ubuntu@ip-172-31-14-249:~$ vi /etc/prometheus/prometheus.yml 
+ubuntu@ip-172-31-14-249:~$ sudo vi /etc/systemd/system/prometheus.service
+ubuntu@ip-172-31-14-249:~$ sudo systemctl enable prometheus.service
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start prometheus.service
+ubuntu@ip-172-31-14-249:~$ systemctl status prometheus.service
+● prometheus.service - Prometheus
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2024-02-24 19:33:05 UTC; 5s ago
+   Main PID: 14530 (prometheus)
+      Tasks: 7 (limit: 4667)
+     Memory: 15.5M
+        CPU: 73ms
+     CGroup: /system.slice/prometheus.service
+             └─14530 /usr/local/bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/data --web.console.te>
+
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.599Z caller=head.go:687 level=info component=tsdb msg="On-disk me>
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.599Z caller=head.go:695 level=info component=tsdb msg="Replaying >
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.599Z caller=head.go:766 level=info component=tsdb msg="WAL segmen>
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.600Z caller=head.go:803 level=info component=tsdb msg="WAL replay>
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.603Z caller=main.go:1060 level=info fs_type=EXT4_SUPER_MAGIC
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.603Z caller=main.go:1063 level=info msg="TSDB started"
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.603Z caller=main.go:1245 level=info msg="Loading configuration fi>
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.608Z caller=main.go:1282 level=info msg="Completed loading of con>
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.609Z caller=main.go:1024 level=info msg="Server is ready to recei>
+Feb 24 19:33:05 monitoring prometheus[14530]: ts=2024-02-24T19:33:05.609Z caller=manager.go:146 level=info component="rule manager" ms>
+lines 1-20/20 (END)
+
+ubuntu@ip-172-31-14-249:~$ sudo lsof -i -P -n | grep LISTEN
+systemd-r   340 systemd-resolve   14u  IPv4  16817      0t0  TCP 127.0.0.53:53 (LISTEN)
+sshd      10566            root    3u  IPv4  63582      0t0  TCP *:22 (LISTEN)
+sshd      10566            root    4u  IPv6  63584      0t0  TCP *:22 (LISTEN)
+prometheu 14530      prometheus    7u  IPv6 110093      0t0  TCP *:9090 (LISTEN)
+ubuntu@ip-172-31-14-249:~$ sudo useradd --system --no-create-home --shell /bin/false node_exporter
+ubuntu@ip-172-31-14-249:~$ cat /etc/passwd | grep node_exporter
+node_exporter:x:997:997::/home/node_exporter:/bin/false
+ubuntu@ip-172-31-14-249:~$ wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+--2024-02-24 19:50:45--  https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+Resolving github.com (github.com)... 4.208.26.197
+Connecting to github.com (github.com)|4.208.26.197|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/9524057/01323270-6ecb-47aa-813f-52a2a89cdc64?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240224%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240224T195045Z&X-Amz-Expires=300&X-Amz-Signature=51ee9b346ee9c8c8751d7e2a9f693da4678c4c25df8de7991391f44ffff14191&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=9524057&response-content-disposition=attachment%3B%20filename%3Dnode_exporter-1.7.0.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream [following]
+--2024-02-24 19:50:45--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/9524057/01323270-6ecb-47aa-813f-52a2a89cdc64?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240224%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240224T195045Z&X-Amz-Expires=300&X-Amz-Signature=51ee9b346ee9c8c8751d7e2a9f693da4678c4c25df8de7991391f44ffff14191&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=9524057&response-content-disposition=attachment%3B%20filename%3Dnode_exporter-1.7.0.linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.111.133, 185.199.108.133, 185.199.109.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.111.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 10419253 (9.9M) [application/octet-stream]
+Saving to: ‘node_exporter-1.7.0.linux-amd64.tar.gz’
+
+node_exporter-1.7.0.linux-amd64.t 100%[============================================================>]   9.94M  --.-KB/s    in 0.07s   
+
+2024-02-24 19:50:45 (151 MB/s) - ‘node_exporter-1.7.0.linux-amd64.tar.gz’ saved [10419253/10419253]
+
+ubuntu@ip-172-31-14-249:~$ ll
+total 105112
+drwxr-x--- 5 ubuntu ubuntu     4096 Feb 24 19:50 ./
+drwxr-xr-x 3 root   root       4096 Feb 23 16:48 ../
+-rw------- 1 ubuntu ubuntu        5 Feb 24 18:58 .bash_history
+-rw-r--r-- 1 ubuntu ubuntu      220 Jan  6  2022 .bash_logout
+-rw-r--r-- 1 ubuntu ubuntu     3771 Jan  6  2022 .bashrc
+drwx------ 2 ubuntu ubuntu     4096 Feb 24 18:37 .cache/
+-rw------- 1 ubuntu ubuntu       20 Feb 24 19:33 .lesshst
+-rw-r--r-- 1 ubuntu ubuntu      807 Jan  6  2022 .profile
+drwx------ 2 ubuntu ubuntu     4096 Feb 23 16:48 .ssh/
+-rw-r--r-- 1 ubuntu ubuntu        0 Feb 24 18:37 .sudo_as_admin_successful
+-rw------- 1 ubuntu ubuntu      803 Feb 24 19:31 .viminfo
+-rw-rw-r-- 1 ubuntu ubuntu      165 Feb 24 19:50 .wget-hsts
+-rw-rw-r-- 1 ubuntu ubuntu 10419253 Nov 13 00:03 node_exporter-1.7.0.linux-amd64.tar.gz
+drwxr-xr-x 2 ubuntu ubuntu     4096 Feb 24 19:19 prometheus-2.49.0-rc.1.linux-amd64/
+-rw-rw-r-- 1 ubuntu ubuntu 97161690 Dec 20 09:58 prometheus-2.49.0-rc.1.linux-amd64.tar.gz
+ubuntu@ip-172-31-14-249:~$ tar -xvf node_exporter-1.7.0.linux-amd64.tar.gz
+node_exporter-1.7.0.linux-amd64/
+node_exporter-1.7.0.linux-amd64/LICENSE
+node_exporter-1.7.0.linux-amd64/node_exporter
+node_exporter-1.7.0.linux-amd64/NOTICE
+ubuntu@ip-172-31-14-249:~$ ll node_exporter-1.7.0.linux-amd64
+total 19484
+drwxr-xr-x 2 ubuntu ubuntu     4096 Nov 13 00:03 ./
+drwxr-x--- 6 ubuntu ubuntu     4096 Feb 24 19:50 ../
+-rw-r--r-- 1 ubuntu ubuntu    11357 Nov 13 00:02 LICENSE
+-rw-r--r-- 1 ubuntu ubuntu      463 Nov 13 00:02 NOTICE
+-rwxr-xr-x 1 ubuntu ubuntu 19925095 Nov 12 23:54 node_exporter*
+ubuntu@ip-172-31-14-249:~$ sudo mv node_exporter-1.7.0.linux-amd64/node_exporter /usr/local/bin/
+ubuntu@ip-172-31-14-249:~$ node_exporter --version
+node_exporter, version 1.7.0 (branch: HEAD, revision: 7333465abf9efba81876303bb57e6fadb946041b)
+  build user:       root@35918982f6d8
+  build date:       20231112-23:53:35
+  go version:       go1.21.4
+  platform:         linux/amd64
+  tags:             netgo osusergo static_build
+ubuntu@ip-172-31-14-249:~$ sudo vi /etc/systemd/system/node_exporter.service
+ubuntu@ip-172-31-14-249:~$ sudo systemctl enable node_exporter
+Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.service → /etc/systemd/system/node_exporter.service.
+ubuntu@ip-172-31-14-249:~$ sudo systemctl enable node_exporter
+ubuntu@ip-172-31-14-249:~$ systemctl status node_exporter.service
+○ node_exporter.service - Node Exporter
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
+     Active: inactive (dead)
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start node_exporter
+ubuntu@ip-172-31-14-249:~$ systemctl status node_exporter.service
+● node_exporter.service - Node Exporter
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2024-02-24 19:52:36 UTC; 1s ago
+   Main PID: 14643 (node_exporter)
+      Tasks: 4 (limit: 4667)
+     Memory: 2.3M
+        CPU: 8ms
+     CGroup: /system.slice/node_exporter.service
+             └─14643 /usr/local/bin/node_exporter --collector.logind
+
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=node_exporter.go:117 level=info collector=thermal_>
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=node_exporter.go:117 level=info collector=time
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=node_exporter.go:117 level=info collector=timex
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=node_exporter.go:117 level=info collector=udp_queu>
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=node_exporter.go:117 level=info collector=uname
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=node_exporter.go:117 level=info collector=vmstat
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=node_exporter.go:117 level=info collector=xfs
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=node_exporter.go:117 level=info collector=zfs
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=tls_config.go:274 level=info msg="Listening on" ad>
+Feb 24 19:52:36 monitoring node_exporter[14643]: ts=2024-02-24T19:52:36.463Z caller=tls_config.go:277 level=info msg="TLS is disabled.>
+lines 1-20/20 (END)
+ubuntu@ip-172-31-14-249:~$ 
+ubuntu@ip-172-31-14-249:~$ sudo vim /etc/prometheus/prometheus.yml
+ubuntu@ip-172-31-14-249:~$ promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+ubuntu@ip-172-31-14-249:~$ curl -X POST http://localhost:9090/-/reload
+ubuntu@ip-172-31-14-249:~$ sudo apt-get install -y apt-transport-https software-properties-common wget
+sudo mkdir -p /etc/apt/keyrings/
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+wget is already the newest version (1.21.2-2ubuntu1).
+wget set to manually installed.
+The following NEW packages will be installed:
+  apt-transport-https
+The following packages will be upgraded:
+  python3-software-properties software-properties-common
+2 upgraded, 1 newly installed, 0 to remove and 35 not upgraded.
+Need to get 44.4 kB of archives.
+After this operation, 170 kB of additional disk space will be used.
+Get:1 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 apt-transport-https all 2.4.11 [1510 B]
+Get:2 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-updates/main amd64 software-properties-common all 0.99.22.9 [14.1 kB]
+Get:3 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-software-properties all 0.99.22.9 [28.8 kB]
+Fetched 44.4 kB in 0s (1776 kB/s)                      
+Selecting previously unselected package apt-transport-https.
+(Reading database ... 95031 files and directories currently installed.)
+Preparing to unpack .../apt-transport-https_2.4.11_all.deb ...
+Unpacking apt-transport-https (2.4.11) ...
+Preparing to unpack .../software-properties-common_0.99.22.9_all.deb ...
+Unpacking software-properties-common (0.99.22.9) over (0.99.22.8) ...
+Preparing to unpack .../python3-software-properties_0.99.22.9_all.deb ...
+Unpacking python3-software-properties (0.99.22.9) over (0.99.22.8) ...
+Setting up apt-transport-https (2.4.11) ...
+Setting up python3-software-properties (0.99.22.9) ...
+Setting up software-properties-common (0.99.22.9) ...
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for dbus (1.12.20-2ubuntu4.1) ...
+Scanning processes...                                                                                                                  
+Scanning candidates...                                                                                                                 
+Scanning linux images...                                                                                                               
+
+Restarting services...
+ systemctl restart acpid.service chrony.service cron.service irqbalance.service multipathd.service packagekit.service polkit.service rsyslog.service serial-getty@ttyS0.service snapd.service ssh.service systemd-journald.service systemd-networkd.service systemd-resolved.service systemd-udevd.service
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart getty@tty1.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+ubuntu@ip-172-31-14-249:~$ wget -q -O - https://apt.grafana.com/gpg.key | gpg - dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com beta main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+gpg: directory '/home/ubuntu/.gnupg' created
+gpg: keybox '/home/ubuntu/.gnupg/pubring.kbx' created
+gpg: WARNING: no command supplied.  Trying to guess what you mean ...
+usage: gpg [options] [filename]
+deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main
+deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com beta main
+ubuntu@ip-172-31-14-249:~$ wget -q -O - https://apt.grafana.com/gpg.key | gpg - dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+gpg: WARNING: no command supplied.  Trying to guess what you mean ...
+usage: gpg [options] [filename]
+ubuntu@ip-172-31-14-249:~$ wget -q -O - https://apt.grafana.com/gpg.key | gpg - dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null^C
+ubuntu@ip-172-31-14-249:~$ sudo apt-get update
+Hit:1 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy InRelease
+Get:2 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
+Hit:3 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-backports InRelease       
+Get:4 https://apt.grafana.com stable InRelease [5984 B]                                              
+Get:5 https://apt.grafana.com beta InRelease [5976 B]                                                
+Get:6 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]        
+Get:7 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [1412 kB]
+Get:8 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [1490 kB]
+Get:9 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1049 kB]
+Err:4 https://apt.grafana.com stable InRelease                                        
+  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 963FA27710458545
+Err:5 https://apt.grafana.com beta InRelease
+  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 9E439B102CF3C0C6
+Reading package lists... Done
+W: GPG error: https://apt.grafana.com stable InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 963FA27710458545
+E: The repository 'https://apt.grafana.com stable InRelease' is not signed.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+W: GPG error: https://apt.grafana.com beta InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 9E439B102CF3C0C6
+E: The repository 'https://apt.grafana.com beta InRelease' is not signed.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+ubuntu@ip-172-31-14-249:~$ sudo apt-get install grafana
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+E: Unable to locate package grafana
+ubuntu@ip-172-31-14-249:~$ wget -q -O - https://apt.grafana.com/gpg.key | gpg - dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+gpg: WARNING: no command supplied.  Trying to guess what you mean ...
+usage: gpg [options] [filename]
+ubuntu@ip-172-31-14-249:~$ wget -q -O - https://apt.grafana.com/gpg.key | gpg -dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+gpg: conflicting commands
+ubuntu@ip-172-31-14-249:~$ wget -q -O - https://apt.grafana.com/gpg.key | gpg dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+gpg: WARNING: no command supplied.  Trying to guess what you mean ...
+gpg: can't open 'dearmor'
+ubuntu@ip-172-31-14-249:~$ wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+ubuntu@ip-172-31-14-249:~$ sudo apt-get install grafana
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+E: Unable to locate package grafana
+ubuntu@ip-172-31-14-249:~$ echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main
+ubuntu@ip-172-31-14-249:~$ echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com beta main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com beta main
+ubuntu@ip-172-31-14-249:~$ sudo apt-get install grafana
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/grafana.list:1 and /etc/apt/sources.list.d/grafana.list:3
+W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/grafana.list:1 and /etc/apt/sources.list.d/grafana.list:3
+W: Target Translations (main/i18n/Translation-en) is configured multiple times in /etc/apt/sources.list.d/grafana.list:1 and /etc/apt/sources.list.d/grafana.list:3
+W: Target CNF (main/cnf/Commands-amd64) is configured multiple times in /etc/apt/sources.list.d/grafana.list:1 and /etc/apt/sources.list.d/grafana.list:3
+W: Target CNF (main/cnf/Commands-all) is configured multiple times in /etc/apt/sources.list.d/grafana.list:1 and /etc/apt/sources.list.d/grafana.list:3
+W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/grafana.list:2 and /etc/apt/sources.list.d/grafana.list:4
+W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/grafana.list:2 and /etc/apt/sources.list.d/grafana.list:4
+W: Target Translations (main/i18n/Translation-en) is configured multiple times in /etc/apt/sources.list.d/grafana.list:2 and /etc/apt/sources.list.d/grafana.list:4
+W: Target CNF (main/cnf/Commands-amd64) is configured multiple times in /etc/apt/sources.list.d/grafana.list:2 and /etc/apt/sources.list.d/grafana.list:4
+W: Target CNF (main/cnf/Commands-all) is configured multiple times in /etc/apt/sources.list.d/grafana.list:2 and /etc/apt/sources.list.d/grafana.list:4
+E: Unable to locate package grafana
+ubuntu@ip-172-31-14-249:~$ wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+ubuntu@ip-172-31-14-249:~$ echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main
+ubuntu@ip-172-31-14-249:~$ echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com beta main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com beta main
+ubuntu@ip-172-31-14-249:~$ sudo apt-get update
+Hit:1 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy InRelease
+Hit:2 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-updates InRelease                         
+Hit:3 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy-backports InRelease                       
+Get:4 https://apt.grafana.com stable InRelease [5984 B]                                              
+Get:5 https://apt.grafana.com beta InRelease [5976 B]                      
+Hit:6 http://security.ubuntu.com/ubuntu jammy-security InRelease           
+Err:5 https://apt.grafana.com beta InRelease         
+  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 9E439B102CF3C0C6
+Get:7 https://apt.grafana.com stable/main amd64 Packages [202 kB]
+Reading package lists... Done     
+W: GPG error: https://apt.grafana.com beta InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 9E439B102CF3C0C6
+E: The repository 'https://apt.grafana.com beta InRelease' is not signed.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+ubuntu@ip-172-31-14-249:~$ sudo apt-get install -y grafana
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  fontconfig-config fonts-dejavu-core libfontconfig1 musl
+The following NEW packages will be installed:
+  fontconfig-config fonts-dejavu-core grafana libfontconfig1 musl
+0 upgraded, 5 newly installed, 0 to remove and 35 not upgraded.
+Need to get 107 MB of archives.
+After this operation, 395 MB of additional disk space will be used.
+Get:1 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy/main amd64 fonts-dejavu-core all 2.37-2build1 [1041 kB]
+Get:2 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy/main amd64 fontconfig-config all 2.13.1-4.2ubuntu5 [29.1 kB]
+Get:3 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy/main amd64 libfontconfig1 amd64 2.13.1-4.2ubuntu5 [131 kB]
+Get:4 http://eu-west-1.ec2.archive.ubuntu.com/ubuntu jammy/universe amd64 musl amd64 1.2.2-4 [407 kB]
+Get:5 https://apt.grafana.com stable/main amd64 grafana amd64 10.3.3 [106 MB]
+Fetched 107 MB in 6s (17.3 MB/s)                                                                                                      
+Selecting previously unselected package fonts-dejavu-core.
+(Reading database ... 95035 files and directories currently installed.)
+Preparing to unpack .../fonts-dejavu-core_2.37-2build1_all.deb ...
+Unpacking fonts-dejavu-core (2.37-2build1) ...
+Selecting previously unselected package fontconfig-config.
+Preparing to unpack .../fontconfig-config_2.13.1-4.2ubuntu5_all.deb ...
+Unpacking fontconfig-config (2.13.1-4.2ubuntu5) ...
+Selecting previously unselected package libfontconfig1:amd64.
+Preparing to unpack .../libfontconfig1_2.13.1-4.2ubuntu5_amd64.deb ...
+Unpacking libfontconfig1:amd64 (2.13.1-4.2ubuntu5) ...
+Selecting previously unselected package musl:amd64.
+Preparing to unpack .../musl_1.2.2-4_amd64.deb ...
+Unpacking musl:amd64 (1.2.2-4) ...
+Selecting previously unselected package grafana.
+Preparing to unpack .../grafana_10.3.3_amd64.deb ...
+Unpacking grafana (10.3.3) ...
+Setting up fonts-dejavu-core (2.37-2build1) ...
+Setting up musl:amd64 (1.2.2-4) ...
+Setting up fontconfig-config (2.13.1-4.2ubuntu5) ...
+Setting up libfontconfig1:amd64 (2.13.1-4.2ubuntu5) ...
+Setting up grafana (10.3.3) ...
+Adding system user `grafana' (UID 115) ...
+Adding new user `grafana' (UID 115) with group `grafana' ...
+Not creating home directory `/usr/share/grafana'.
+### NOT starting on installation, please execute the following statements to configure grafana to start automatically using systemd
+ sudo /bin/systemctl daemon-reload
+ sudo /bin/systemctl enable grafana-server
+### You can start grafana-server by executing
+ sudo /bin/systemctl start grafana-server
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.6) ...
+Scanning processes...                                                                                                                  
+Scanning candidates...                                                                                                                 
+Scanning linux images...                                                                                                               
+
+Restarting services...
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart getty@tty1.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+ubuntu@ip-172-31-14-249:~$ sudo systemctl enable grafana-server.service
+Synchronizing state of grafana-server.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable grafana-server
+Created symlink /etc/systemd/system/multi-user.target.wants/grafana-server.service → /lib/systemd/system/grafana-server.service.
+ubuntu@ip-172-31-14-249:~$ sudo systemctl start grafana-server.service
+ubuntu@ip-172-31-14-249:~$ sudo systemctl status grafana-server.service
+● grafana-server.service - Grafana instance
+     Loaded: loaded (/lib/systemd/system/grafana-server.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2024-02-24 20:04:22 UTC; 6s ago
+       Docs: http://docs.grafana.org
+   Main PID: 16361 (grafana)
+      Tasks: 10 (limit: 4667)
+     Memory: 46.4M
+        CPU: 2.350s
+     CGroup: /system.slice/grafana-server.service
+             └─16361 /usr/share/grafana/bin/grafana server --config=/etc/grafana/grafana.ini --pidfile=/run/grafana/grafana-server.pid>
+
+Feb 24 20:04:26 monitoring grafana[16361]: logger=ngalert.state.manager t=2024-02-24T20:04:26.970708535Z level=info msg="Warming state>
+Feb 24 20:04:26 monitoring grafana[16361]: logger=local.finder t=2024-02-24T20:04:26.981869699Z level=warn msg="Skipping finding plugi>
+Feb 24 20:04:27 monitoring grafana[16361]: logger=grafana-apiserver t=2024-02-24T20:04:27.007915892Z level=info msg="Authentication is>
+Feb 24 20:04:27 monitoring grafana[16361]: logger=grafana-apiserver t=2024-02-24T20:04:27.012477027Z level=info msg="Adding GroupVersi>
+Feb 24 20:04:27 monitoring grafana[16361]: logger=ngalert.multiorg.alertmanager t=2024-02-24T20:04:27.015783069Z level=info msg="Start>
+Feb 24 20:04:27 monitoring grafana[16361]: logger=ngalert.state.manager t=2024-02-24T20:04:27.016028434Z level=info msg="State cache h>
+Feb 24 20:04:27 monitoring grafana[16361]: logger=ngalert.scheduler t=2024-02-24T20:04:27.016212476Z level=info msg="Starting schedule>
+Feb 24 20:04:27 monitoring grafana[16361]: logger=ticker t=2024-02-24T20:04:27.016401735Z level=info msg=starting first_tick=2024-02-2>
+Feb 24 20:04:27 monitoring grafana[16361]: logger=plugins.update.checker t=2024-02-24T20:04:27.067723185Z level=info msg="Update check>
+Feb 24 20:04:27 monitoring grafana[16361]: logger=grafana.update.checker t=2024-02-24T20:04:27.080745558Z level=info msg="Update check>
+
+ubuntu@ip-172-31-14-249:~$ sudo lsof -i -P -n | grep LISTEN
+prometheu 14530      prometheus    7u  IPv6 110093      0t0  TCP *:9090 (LISTEN)
+node_expo 14643   node_exporter    3u  IPv6 110467      0t0  TCP *:9100 (LISTEN)
+sshd      14858            root    3u  IPv4 113552      0t0  TCP *:22 (LISTEN)
+sshd      14858            root    4u  IPv6 113554      0t0  TCP *:22 (LISTEN)
+systemd-r 14886 systemd-resolve   14u  IPv4 113673      0t0  TCP 127.0.0.53:53 (LISTEN)
+grafana   16361         grafana   11u  IPv6 123966      0t0  TCP *:3000 (LISTEN)
+ubuntu@ip-172-31-14-249:~$ bash
+ubuntu@monitoring:~$ sudo vim /etc/prometheus/prometheus.yml
+ubuntu@monitoring:~$ promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+ubuntu@monitoring:~$ curl -X POST http://localhost:9090/-/reload
+ubuntu@monitoring:~$ ping 172.31.33.116
+PING 172.31.33.116 (172.31.33.116) 56(84) bytes of data.
+64 bytes from 172.31.33.116: icmp_seq=1 ttl=64 time=1.24 ms
+64 bytes from 172.31.33.116: icmp_seq=2 ttl=64 time=0.918 ms
+64 bytes from 172.31.33.116: icmp_seq=3 ttl=64 time=0.870 ms
+64 bytes from 172.31.33.116: icmp_seq=4 ttl=64 time=0.984 ms
+64 bytes from 172.31.33.116: icmp_seq=5 ttl=64 time=0.897 ms
+64 bytes from 172.31.33.116: icmp_seq=6 ttl=64 time=0.920 ms
+64 bytes from 172.31.33.116: icmp_seq=7 ttl=64 time=0.926 ms
+64 bytes from 172.31.33.116: icmp_seq=8 ttl=64 time=0.961 ms
+64 bytes from 172.31.33.116: icmp_seq=9 ttl=64 time=0.891 ms
+¸64 bytes from 172.31.33.116: icmp_seq=10 ttl=64 time=1.08 ms
+64 bytes from 172.31.33.116: icmp_seq=11 ttl=64 time=0.965 ms
+64 bytes from 172.31.33.116: icmp_seq=12 ttl=64 time=0.947 ms
+^C
+--- 172.31.33.116 ping statistics ---
+12 packets transmitted, 12 received, 0% packet loss, time 11044ms
+rtt min/avg/max/mdev = 0.870/0.966/1.242/0.098 ms
+ubuntu@monitoring:~$ sudo vim /etc/prometheus/prometheus.yml
+ubuntu@monitoring:~$ promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+ubuntu@monitoring:~$ curl -X POST http://localhost:9090/-/reload
+ubuntu@monitoring:~$ sudo vim /etc/prometheus/prometheus.yml
+ubuntu@monitoring:~$ promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+ubuntu@monitoring:~$ curl -X POST http://localhost:9090/-/reload
+ubuntu@monitoring:~$ promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+ubuntu@monitoring:~$ curl -X POST http://localhost:9090/-/reload
+ubuntu@monitoring:~$ curl -X POST http://localhost:9090/-/reload
+ubuntu@monitoring:~$ sudo vim /etc/prometheus/prometheus.yml
+ubuntu@monitoring:~$ promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+  FAILED: parsing YAML file /etc/prometheus/prometheus.yml: yaml: unmarshal errors:
+  line 36: field metric_path not found in type config.ScrapeConfig
+
+ubuntu@monitoring:~$ sudo vim /etc/prometheus/prometheus.yml
+ubuntu@monitoring:~$ promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+ubuntu@monitoring:~$ curl -X POST http://localhost:9090/-/reload
+ubuntu@monitoring:~$ sudo vim /etc/prometheus/prometheus.yml
+ubuntu@monitoring:~$ promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+ubuntu@monitoring:~$ curl -X POST http://localhost:9090/-/reload
+ubuntu@monitoring:~$ sudo vim /etc/prometheus/prometheus.yml
+
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets: ["localhost:9100"]
+
+  - job_name: "jenkins"
+    metrics_path: "prometheus"
+    static_configs:
+      - targets: ["34.244.228.215:8080"]
+
+  - job_name: "k8-master"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: ["34.247.105.7:31977"]
+
+  - job_name: "k8-worker1"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: ["10.99.221.113.253.144.137:31977"]
+
+
+                                                                                                                     48,31         Bot
